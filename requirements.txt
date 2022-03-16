@@ -24,3 +24,4 @@ pytest-django==4.5.2
 redis==4.1.4
 sentry-sdk==1.5.6
 whitenoise==6.0.0
+sqlalchemy==1.4.32
