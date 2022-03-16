@@ -1,0 +1,27 @@
+language: python
+python:
+  - "3.9"
+
+services:
+  - postgresql
+
+addons:
+  postgresql: "11"
+  apt:
+    packages:
+    - postgresql-11
+    - postgresql-client-11
+env:
+  global:
+  - PGPORT=5433
+  - PGUSER=travis
+
+before_script:
+  - psql -c "ALTER USER travis WITH PASSWORD 'password';" -U travis
+  - psql -c 'create database travis_ci_test;' -U travis
+  - pip install pipenv
+  - pipenv install --dev
+  - python manage.py migrate
+
+script:
+  - pytest

@@ -1,0 +1,6 @@
+from .course_serializer import CourseSerializer
+from .lecture_serializer import LectureSerializer
+from .homework_serializer import HomeworkSerializer
+from .homework_answer_serializer import HomeworkAnswerSerializer
+from .mark_serializer import MarkSerializer
+from .comment_serializer import CommentSerializer
