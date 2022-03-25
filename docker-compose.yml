@@ -7,7 +7,6 @@ services:
       - "8000:8000"
     depends_on:
       - db
-      - worker
     env_file:
       - .env
     entrypoint: []
@@ -16,11 +15,17 @@ services:
         ./manage.py collectstatic --noinput &&
         ./manage.py migrate &&
         gunicorn --bind 0.0.0.0:8000 conf.wsgi"
+#        daphne -b 0.0.0.0 -p 8000 conf.asgi:application"
+
+    volumes:
+      - ./:/home/appuser/project/
 
   db:
     image: postgres:14
     ports:
       - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
     volumes:
       - db-data:/var/lib/postgresql/data
     env_file:
@@ -35,6 +40,8 @@ services:
       - redis
     env_file:
       - .env
+    volumes:
+      - ./:/home/appuser/project/
 
   beat:
     build: .
@@ -43,9 +50,10 @@ services:
     depends_on:
       - db
       - redis
-      - worker
     env_file:
       - .env
+    volumes:
+      - ./:/home/appuser/project/
 
   flower:
     build: .
@@ -56,9 +64,10 @@ services:
     depends_on:
       - db
       - redis
-      - worker
     env_file:
       - .env
+    volumes:
+      - ./:/home/appuser/project/
 
   redis:
     image: redis:alpine

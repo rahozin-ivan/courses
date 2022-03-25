@@ -5,8 +5,6 @@ from pathlib import Path
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
-from celery.schedules import crontab
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -38,6 +36,7 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework_simplejwt',
     'django_celery_beat',
+    'channels',
 
     # local
     'users',
@@ -74,6 +73,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'conf.wsgi.application'
+ASGI_APPLICATION = 'conf.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -193,12 +193,16 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BROKER_URL = os.getenv('REDIS_URL')
-CELERY_RESULT_BACKEND = 'db+postgresql://postgres:postgres@db:5432/postgres'
+CELERY_RESULT_BACKEND = 'db+postgresql://' + os.getenv('DB_USER') + ':' + os.getenv('DB_PASSWORD') + \
+                        '@' + os.getenv('DB_HOST') + ':5432/' + os.getenv('DB_NAME')
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_CREATE_MISSING_QUEUES = True
 
-CELERY_BEAT_SCHEDULE = {
-    'count-average-mark-every-minute': {
-        'task': 'courses.tasks.count_average_mark',
-        'schedule': crontab(minute='*/1'),
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(os.getenv('REDIS_HOST'), 6379)],
+        },
     },
 }

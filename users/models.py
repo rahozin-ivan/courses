@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+import uuid
+
 from users.managers import UserManager
 
 
@@ -15,6 +17,7 @@ class User(AbstractUser):
     first_name = models.CharField("First name", max_length=150)
     last_name = models.CharField("Last name", max_length=150)
     role = models.CharField("Role", max_length=7, choices=RoleChoices.choices)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     objects = UserManager()
 

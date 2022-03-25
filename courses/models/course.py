@@ -22,5 +22,7 @@ class Course(models.Model):
         super().save(*args, **kwargs)
 
         if created:
-            from courses.tasks import generate_course_image_based_on_title
-            generate_course_image_based_on_title.delay(self.pk)
+            from courses.tasks import GenerateCourseImageTask
+            task = GenerateCourseImageTask()
+            task.apply_async(args=(self.pk, ), )
+
