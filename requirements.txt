@@ -27,3 +27,4 @@ whitenoise==6.0.0
 sqlalchemy==1.4.32
 channels==3.0.4
 channels-redis==3.4.0
+django-filter==21.1

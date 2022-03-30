@@ -14,8 +14,8 @@ services:
         "./wait-for.sh ${DB_HOST}:5432 &&
         ./manage.py collectstatic --noinput &&
         ./manage.py migrate &&
-        gunicorn --bind 0.0.0.0:8000 conf.wsgi"
-#        daphne -b 0.0.0.0 -p 8000 conf.asgi:application"
+        daphne -b 0.0.0.0 -p 8000 conf.asgi:application"
+#        gunicorn --bind 0.0.0.0:8000 conf.wsgi"
 
     volumes:
       - ./:/home/appuser/project/
