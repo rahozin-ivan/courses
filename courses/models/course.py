@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from simple_history.models import HistoricalRecords
+
 from courses.managers import CourseManager
 
 
@@ -10,6 +12,7 @@ class Course(models.Model):
                                       limit_choices_to={'role': get_user_model().RoleChoices.TEACHER})
     students = models.ManyToManyField(get_user_model(), related_name='courses_as_student')
     picture = models.ImageField(null=True, blank=True, upload_to='course_images/')
+    history = HistoricalRecords()
 
     objects = CourseManager()
 
